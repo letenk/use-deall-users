@@ -1,0 +1,466 @@
+openapi: '3.0.2'
+info:
+  title: User's Use Deall 
+  version: '1.0.0'
+  description: Api spesification forUser's Use Deall 
+  contact:
+    name: Rizky Darmawan
+    email: darmawanrizky43@gmail.com
+    url: https://www.linkedin.com/in/rizkydarmawan/
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/v1/users:
+    get:
+      summary: Find all user
+      security:
+        - bearerAuth: []
+      tags:
+        - "Users"
+      responses:
+        200:
+          description: Find all users success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseWithMultipleData" 
+              example:
+                code: 200
+                status: success
+                message: List of users
+                data:
+                  - id: cd84146c-715f-47e8-a817-28331d49729c
+                    fullame: Jhon Swaller
+                    username: jhon
+                    role: admin
+                  - id: fad7a07f-b4cc-428b-b405-124c1589f32c
+                    fullame: Rich Cool 
+                    username: rich
+                    role: user
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 401
+                  status: error
+                  message: unauthorized
+    post:
+      summary: Create user
+      security:
+        - bearerAuth: []
+      tags:
+        - "Users"
+      requestBody:
+        required: true
+        description: If the field "role" is empty, it will default set role "user".
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserBody"
+            example:
+              fullname: Jhon Swaller
+              username: jhon
+              password: password
+              role: admin
+      responses:
+        200:
+          description: Create user success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                  status:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  code: 201
+                  status: success
+                  message: User has been created
+        400:
+          description: Username already exists and Validation Errors
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/CreateUserFailedIsExist"
+                  - $ref: "#/components/schemas/CreateUserFailedValidationErrors"
+                example:
+                  CreateUserFailedIsExist:
+                    code: 400
+                    status: error
+                    message: create user failed
+                    data: {
+                      errors: username already exist
+                    }
+                  CreateUserFailedValidationErrors:
+                    code: 400
+                    status: error
+                    message: create user failed
+                    data: {
+                      errors: [
+                        "Key: 'RegisterInput.Fullname' Error:Field validation for 'Fullname' failed on the 'required' tag",
+                        "Key: 'RegisterInput.Username' Error:Field validation for 'Username' failed on the 'username' tag",
+                        "Key: 'RegisterInput.Password' Error:Field validation for 'Password' failed on the 'required' tag"
+                      ]
+                    }
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 401
+                  status: error
+                  message: unauthorized
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 403
+                  status: error
+                  message: forbidden
+
+  /api/v1/{idUser}/users:
+    get:
+      summary: Find one user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: String ID of the user to get one user
+      security:
+        - bearerAuth: []
+      tags:
+        - "Users"
+      responses:
+        200:
+          description: Find one user success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReponseWithData" 
+              example:
+                code: 200
+                status: success
+                message: Data of users
+                data:
+                    id: cd84146c-715f-47e8-a817-28331d49729c
+                    fullame: Jhon Swaller
+                    username: jhon
+                    role: admin
+        400:
+          description: User not found
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 400
+                  status: error
+                  message: user with id cd84146c-715f-47e8-a817-28331d49729c not found 
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 401
+                  status: error
+                  message: unauthorized
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 403
+                  status: error
+                  message: forbidden
+    patch:
+      summary: Update user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: String ID of the user to update user
+      security:
+        - bearerAuth: []
+      tags:
+        - "Users"
+      requestBody:
+        required: true
+        description: Each field is empty, will  contain with before data.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserBody"
+            example:
+              fullname: Jhon Smith
+              password: password
+              role: user
+      responses:
+        200:
+          description: Update user success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReponseWithData" 
+              example:
+                code: 200
+                status: success
+                message: User has been updated
+                data:
+                    id: cd84146c-715f-47e8-a817-28331d49729c
+                    fullame: Jhon Smith
+                    username: jhon
+                    role: user
+        400:
+          description: User not found
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 400
+                  status: error
+                  message: user with id cd84146c-715f-47e8-a817-28331d49729c not found 
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 401
+                  status: error
+                  message: unauthorized
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 403
+                  status: error
+                  message: forbidden
+    delete:
+      summary: Delete user
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: String ID of the user to delete user
+      security:
+        - bearerAuth: []
+      tags:
+        - "Users"
+      responses:
+        200:
+          description: Delete user success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReponseWithoutData" 
+              example:
+                code: 200
+                status: success
+                message: User has been deleted
+        400:
+          description: User not found
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 400
+                  status: error
+                  message: user with id cd84146c-715f-47e8-a817-28331d49729c not found 
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 401
+                  status: error
+                  message: unauthorized
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ReponseWithoutData"
+              example:
+                Unauthorized:
+                  code: 403
+                  status: error
+                  message: forbidden
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Authentication with JWT
+
+  schemas:
+# Components Schema Create User
+    CreateUserBody:
+      type: object
+      properties:
+        fullname:
+          type: string
+          required:
+            - "true"
+        username:
+          type: string
+          required:
+            - "true"
+          description: username must be unique.
+        password:
+          type: string
+          required:
+            - "true"
+        Role:
+          type: string
+          enum:
+            - admin
+            - user
+            
+    UpdateUserBody:
+      type: object
+      properties:
+        fullname:
+          type: string
+        password:
+          type: string
+        Role:
+          type: string
+          enum:
+            - admin
+            - user
+
+    CreateUserFailedIsExist:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            errors:
+              type: string
+
+    CreateUserFailedValidationErrors:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          properties:
+            errors:
+              type: string
+# End Components Schema Create User
+
+# Components Schema responses
+    ResponseWithMultipleData:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              fullname:
+                type: string
+              username:
+                type: string
+              role:
+                type: string
+
+    ReponseWithData:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+            fullname:
+              type: string
+            username:
+              type: string
+            role:
+              type: string
+    ReponseWithoutData:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        status:
+          type: string
+        message:
+          type: string
+# End Components Schema responses
