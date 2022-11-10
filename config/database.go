@@ -6,13 +6,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func SetupDB() *mongo.Database {
-	godotenv.Load(".env")
 	dbUser := os.Getenv("MONGO_USER")
 	dbPassword := os.Getenv("MONGO_PASSWORD")
 	dbHost := os.Getenv("MONGO_HOST")
