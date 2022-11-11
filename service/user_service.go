@@ -13,6 +13,7 @@ import (
 type UserService interface {
 	GetAll() ([]domain.User, error)
 	GetOne(id string) (domain.User, error)
+	GetOneByUsername(username string) (domain.User, error)
 	Create(req web.UserCreateRequest) (string, error)
 	Update(id string, req web.UserUpdateRequest) (bool, error)
 	Delete(id string) (bool, error)
@@ -40,11 +41,35 @@ func (s *userService) GetAll() ([]domain.User, error) {
 func (s *userService) GetOne(id string) (domain.User, error) {
 	// Get one
 	user, err := s.repository.GetOne(id)
+
+	// If user not found
+	if user.ID == "" {
+		message := fmt.Sprintf("user with ID %s Not Found", id)
+		return user, errors.New(message)
+	}
+
 	if err != nil {
 		return user, err
 	}
 
-	return user, err
+	return user, nil
+}
+
+func (s *userService) GetOneByUsername(username string) (domain.User, error) {
+	// Get one
+	user, err := s.repository.GetOneByUsername(username)
+
+	// If user not found
+	if user.ID == "" {
+		message := fmt.Sprintf("user with username %s Not Found", username)
+		return user, errors.New(message)
+	}
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 func (s *userService) Create(req web.UserCreateRequest) (string, error) {

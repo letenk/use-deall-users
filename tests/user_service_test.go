@@ -155,26 +155,129 @@ func TestGetOneUserService(t *testing.T) {
 	// Create one user use repository
 	id, err := repository.Insert(newUser)
 	helper.ErrLogPanic(err)
-	// EndC reate new sample object user
+	// End reate new sample object user
 
-	// Get all
+	testCases := []struct {
+		name   string
+		userID string
+	}{
+		{
+			name:   "success_get_one_by_username",
+			userID: id,
+		},
+		{
+			name:   "failed_get_one_not_found",
+			userID: "4112d578-6163-11ed-9b6a-0242ac120002",
+		},
+	}
+
+	for i := range testCases {
+		tc := testCases[i]
+
+		// Get one
+		user, err := service.GetOne(tc.userID)
+
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			if tc.name == "success_get_one_by_username" {
+				// Pass
+				assert.NoError(t, err)
+
+				assert.NotEmpty(t, user.ID)
+				assert.Equal(t, newUser.Fullname, user.Fullname)
+				assert.Equal(t, newUser.Username, user.Username)
+				assert.Equal(t, newUser.Role, user.Role)
+
+				assert.NotEmpty(t, user.CreatedAt)
+				assert.NotEmpty(t, user.UpdatedAt)
+
+				// Compare password
+				err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+				assert.NoError(t, err)
+			} else {
+				assert.Error(t, err)
+				respErrorMessage := fmt.Sprintf("user with ID %s Not Found", tc.userID)
+				assert.Equal(t, respErrorMessage, err.Error())
+			}
+		})
+
+	}
+
+}
+
+func TestGetOneByUsernameUserService(t *testing.T) {
+	t.Parallel()
+
+	repository := repository.NewUserRepository(ConnTest)
+	service := service.NewServiceUser(repository)
+
+	// Create new sample object user
+	newUser := domain.User{}
+	fullname := fmt.Sprintf("%s %s", helper.RandomPerson(), helper.RandomPerson())
+	newUser.Fullname = fullname
+	newUser.Username = strings.ToLower(helper.RandomPerson())
+	newUser.Role = "admin"
+	// Hash password
+	password := "password"
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	helper.ErrLogPanic(err)
+	newUser.Password = string(passwordHash)
+	// Create one user use repository
+	id, err := repository.Insert(newUser)
+	helper.ErrLogPanic(err)
+	// End reate new sample object user
+
+	// Get one
 	user, err := service.GetOne(id)
 	helper.ErrLogPanic(err)
 
-	// Pass
-	assert.NoError(t, err)
+	testCases := []struct {
+		name     string
+		username string
+	}{
+		{
+			name:     "success_get_one_by_username",
+			username: user.Username,
+		},
+		{
+			name:     "failed_get_one_by_username_not_found",
+			username: "wrong",
+		},
+	}
 
-	assert.NotEmpty(t, user.ID)
-	assert.Equal(t, newUser.Fullname, user.Fullname)
-	assert.Equal(t, newUser.Username, user.Username)
-	assert.Equal(t, newUser.Role, user.Role)
+	for i := range testCases {
+		tc := testCases[i]
 
-	assert.NotEmpty(t, user.CreatedAt)
-	assert.NotEmpty(t, user.UpdatedAt)
+		// Get one by username
+		userByUsername, err := service.GetOneByUsername(tc.username)
 
-	// Compare password
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	assert.NoError(t, err)
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			if tc.name == "success_get_one_by_username" {
+				// Pass
+				assert.NoError(t, err)
+
+				assert.Equal(t, userByUsername.ID, id)
+				assert.Equal(t, userByUsername.Fullname, user.Fullname)
+				assert.Equal(t, userByUsername.Username, user.Username)
+				assert.Equal(t, userByUsername.Role, user.Role)
+
+				assert.NotEmpty(t, userByUsername.CreatedAt)
+				assert.NotEmpty(t, userByUsername.UpdatedAt)
+
+				// Compare password
+				err = bcrypt.CompareHashAndPassword([]byte(userByUsername.Password), []byte(password))
+				assert.NoError(t, err)
+			} else {
+				// Pass
+				assert.Error(t, err)
+				respErrorMessage := fmt.Sprintf("user with username %s Not Found", tc.username)
+				assert.Equal(t, respErrorMessage, err.Error())
+			}
+		})
+	}
 }
 
 func TestUpdateUserService(t *testing.T) {
