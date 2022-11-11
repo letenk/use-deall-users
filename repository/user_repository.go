@@ -15,6 +15,7 @@ import (
 type UserRepository interface {
 	GetAll() ([]domain.User, error)
 	GetOne(id string) (domain.User, error)
+	GetOneByUsername(username string) (domain.User, error)
 	Insert(user domain.User) (string, error)
 	Update(user domain.User) (bool, error)
 	Delete(id string) (bool, error)
@@ -70,6 +71,23 @@ func (r *userRepository) GetOne(id string) (domain.User, error) {
 
 	// Find one by id
 	err := r.db.Collection("users").FindOne(ctx, bson.M{"_id": id}).Decode(&user)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func (r *userRepository) GetOneByUsername(username string) (domain.User, error) {
+	// Create a context in order to disconnect
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	// Cancel context after all process ends
+	defer cancel()
+
+	var user domain.User
+
+	// Find one by id
+	err := r.db.Collection("users").FindOne(ctx, bson.M{"username": username}).Decode(&user)
 	if err != nil {
 		return user, err
 	}

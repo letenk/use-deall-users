@@ -98,6 +98,31 @@ func TestGetOneUserRepository(t *testing.T) {
 	assert.NotEmpty(t, user.UpdatedAt)
 }
 
+func TestGetByUsernameUserRepository(t *testing.T) {
+	t.Parallel()
+	id := createRandomUserRepository(t)
+
+	repository := repository.NewUserRepository(ConnTest)
+
+	// GetOne by id
+	user, err := repository.GetOne(id)
+	helper.ErrLogPanic(err)
+
+	// Get one by id
+	userByEmail, err := repository.GetOneByUsername(user.Username)
+	helper.ErrLogPanic(err)
+
+	// Pass
+	assert.NoError(t, err)
+	assert.Equal(t, id, userByEmail.ID)
+	assert.NotEmpty(t, userByEmail.Fullname)
+	assert.NotEmpty(t, userByEmail.Username)
+	assert.NotEmpty(t, userByEmail.Password)
+	assert.NotEmpty(t, userByEmail.Role)
+	assert.NotEmpty(t, userByEmail.CreatedAt)
+	assert.NotEmpty(t, userByEmail.UpdatedAt)
+}
+
 func TestUpdateUserRepository(t *testing.T) {
 	t.Parallel()
 	id := createRandomUserRepository(t)
