@@ -47,7 +47,7 @@ func (s *userService) Login(req web.UserLoginRequest) (string, error) {
 
 	// If user not found
 	if user.ID == "" {
-		return "", errors.New("email or password incorrect")
+		return "", errors.New("username or password incorrect")
 	}
 
 	if err != nil {
@@ -57,7 +57,7 @@ func (s *userService) Login(req web.UserLoginRequest) (string, error) {
 	// If user is available, compare password hash with password from request use bcrypt
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return "", errors.New("email or password incorrect")
+		return "", errors.New("username or password incorrect")
 	}
 
 	// If username and password is matched, generate token
@@ -227,5 +227,4 @@ func (s *userService) Delete(id string) (bool, error) {
 	}
 
 	return ok, nil
-
 }

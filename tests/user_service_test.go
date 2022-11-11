@@ -14,7 +14,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func TestLogin(t *testing.T) {
+func TestLoginUserService(t *testing.T) {
 	fullname := fmt.Sprintf("%s %s", helper.RandomPerson(), helper.RandomPerson())
 	dataUser := web.UserCreateRequest{
 		Fullname: fullname,

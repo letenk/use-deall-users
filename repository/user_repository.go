@@ -136,6 +136,7 @@ func (r *userRepository) Update(user domain.User) (bool, error) {
 		{"$set", bson.D{
 			{"fullname", user.Fullname},
 			{"password", user.Password},
+			{"role", user.Role},
 			{"updated_at", time.Now()},
 		}}}
 
