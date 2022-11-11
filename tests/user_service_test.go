@@ -14,6 +14,74 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func TestLogin(t *testing.T) {
+	fullname := fmt.Sprintf("%s %s", helper.RandomPerson(), helper.RandomPerson())
+	dataUser := web.UserCreateRequest{
+		Fullname: fullname,
+		Username: strings.ToLower(helper.RandomPerson()),
+		Password: "password",
+		Role:     "admin",
+	}
+
+	repository := repository.NewUserRepository(ConnTest)
+	service := service.NewServiceUser(repository)
+
+	// Create new user
+	_, err := service.Create(dataUser)
+	helper.ErrLogPanic(err)
+
+	// Test case
+	testCases := []struct {
+		name string
+		req  web.UserLoginRequest
+	}{
+		{
+			name: "failed_login_wrong_username",
+			req: web.UserLoginRequest{
+				Username: "wrong",
+				Password: dataUser.Password,
+			},
+		},
+		{
+			name: "failed_login_wrong_password",
+			req: web.UserLoginRequest{
+				Username: dataUser.Username,
+				Password: "wrong",
+			},
+		},
+		{
+			name: "success_login",
+			req: web.UserLoginRequest{
+				Username: dataUser.Username,
+				Password: dataUser.Password,
+			},
+		},
+	}
+
+	// Test
+	for i := range testCases {
+		tc := testCases[i]
+
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			// Login
+			token, err := service.Login(tc.req)
+
+			if tc.name == "failed_login_wrong_username" || tc.name == "failed_login_wrong_password" {
+				assert.Empty(t, token)
+				assert.Error(t, err)
+				assert.Equal(t, "email or password incorrect", err.Error())
+			} else {
+				assert.NotEmpty(t, token)
+				assert.NoError(t, err)
+			}
+		})
+
+	}
+
+}
+
 func TestCreateUserService(t *testing.T) {
 	fullname := fmt.Sprintf("%s %s", helper.RandomPerson(), helper.RandomPerson())
 
