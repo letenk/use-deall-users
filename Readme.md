@@ -1,0 +1,19 @@
+# Todo
+- [ ] Documentation
+    - [ ] Swagger
+    - [ ] Postman
+- [ ] Architecture diagram flow CRUD and Login
+- [ ] Attach credential in the Readme.md
+- [ ] CRUD
+    - [ ] Create
+    - [ ] Get all
+    - [ ] Get one
+    - [ ] Update
+    - [ ] Delete
+    - [ ] Login
+        - [ ] Generate Token JWT
+        - [ ] Refresh Token
+- [ ] Role `user` only can access `read`
+- [ ] Containerization
+- [ ] Kubernetes
+- [ ] Upload into Github
