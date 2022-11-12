@@ -44,7 +44,7 @@ func SetupRouter(db *mongo.Database) *gin.Engine {
 	// Endpoint get all user with middleware
 	users.GET("", middleware.AuthMiddleware(serviceUser), handlerUser.GetAll)
 	// Endpoint create user with middleware
-	users.POST("", middleware.AuthMiddleware(serviceUser), handlerUser.Create)
+	users.POST("", handlerUser.Create)
 	// Endpoint get one user with middleware
 	users.GET("/:id", middleware.AuthMiddleware(serviceUser), handlerUser.GetOne)
 	// Endpoint update user with middleware
