@@ -71,7 +71,7 @@ func TestLoginUserService(t *testing.T) {
 			if tc.name == "failed_login_wrong_username" || tc.name == "failed_login_wrong_password" {
 				assert.Empty(t, token)
 				assert.Error(t, err)
-				assert.Equal(t, "email or password incorrect", err.Error())
+				assert.Equal(t, "username or password incorrect", err.Error())
 			} else {
 				assert.NotEmpty(t, token)
 				assert.NoError(t, err)
