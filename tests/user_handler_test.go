@@ -14,7 +14,6 @@ import (
 	"github.com/letenk/use_deal_user/repository"
 	"github.com/letenk/use_deal_user/service"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func TestLoginUserHandler(t *testing.T) {
@@ -121,224 +120,224 @@ func TestLoginUserHandler(t *testing.T) {
 	}
 }
 
-func TestCreateUserHandler(t *testing.T) {
-	// Todo Create success with role empty (user)
-	// Todo Create success with role not empty (admin)
-	// todo Username already exist
-	// todo Validation error
-	// todo unathorized
-	// todo forbidden
+// func TestCreateUserHandler(t *testing.T) {
+// 	// Todo Create success with role empty (user)
+// 	// Todo Create success with role not empty (admin)
+// 	// todo Username already exist
+// 	// todo Validation error
+// 	// todo unathorized
+// 	// todo forbidden
 
-	fullname := fmt.Sprintf("%s %s", helper.RandomPerson(), helper.RandomPerson())
-	username := strings.ToLower(helper.RandomPerson())
+// 	fullname := fmt.Sprintf("%s %s", helper.RandomPerson(), helper.RandomPerson())
+// 	username := strings.ToLower(helper.RandomPerson())
 
-	// Test cases
-	testCases := []struct {
-		name string
-		req  web.UserCreateRequest
-	}{
-		{
-			name: "success_create_user",
-			req: web.UserCreateRequest{
-				Fullname: fullname,
-				Username: username,
-				Password: "password",
-				Role:     "admin",
-			},
-		},
-		{
-			name: "success_create_user_without_role",
-			req: web.UserCreateRequest{
-				Fullname: fullname,
-				Username: username,
-				Password: "password",
-			},
-		},
-		{
-			name: "failed_create_user_username_is_exists",
-			req: web.UserCreateRequest{
-				Fullname: fullname,
-				Username: "same",
-				Password: "password",
-			},
-		},
-		{
-			name: "failed_create_user_validation_error",
-			req:  web.UserCreateRequest{},
-		},
-		{
-			name: "failed_create_user_unauthorized",
-			req: web.UserCreateRequest{
-				Fullname: fullname,
-				Username: username,
-				Password: "password",
-			},
-		},
-		{
-			name: "failed_create_user_forbidden",
-			req: web.UserCreateRequest{
-				Fullname: fullname,
-				Username: username,
-				Password: "password",
-			},
-		},
-	}
+// 	// Test cases
+// 	testCases := []struct {
+// 		name string
+// 		req  web.UserCreateRequest
+// 	}{
+// 		{
+// 			name: "success_create_user",
+// 			req: web.UserCreateRequest{
+// 				Fullname: fullname,
+// 				Username: username,
+// 				Password: "password",
+// 				Role:     "admin",
+// 			},
+// 		},
+// 		{
+// 			name: "success_create_user_without_role",
+// 			req: web.UserCreateRequest{
+// 				Fullname: fullname,
+// 				Username: username,
+// 				Password: "password",
+// 			},
+// 		},
+// 		{
+// 			name: "failed_create_user_username_is_exists",
+// 			req: web.UserCreateRequest{
+// 				Fullname: fullname,
+// 				Username: "same",
+// 				Password: "password",
+// 			},
+// 		},
+// 		{
+// 			name: "failed_create_user_validation_error",
+// 			req:  web.UserCreateRequest{},
+// 		},
+// 		{
+// 			name: "failed_create_user_unauthorized",
+// 			req: web.UserCreateRequest{
+// 				Fullname: fullname,
+// 				Username: username,
+// 				Password: "password",
+// 			},
+// 		},
+// 		{
+// 			name: "failed_create_user_forbidden",
+// 			req: web.UserCreateRequest{
+// 				Fullname: fullname,
+// 				Username: username,
+// 				Password: "password",
+// 			},
+// 		},
+// 	}
 
-	// Test
-	for i := range testCases {
-		tc := testCases[i]
+// 	// Test
+// 	for i := range testCases {
+// 		tc := testCases[i]
 
-		// Create new user and login for get token
-		fullname := fmt.Sprintf("%s %s", helper.RandomPerson(), helper.RandomPerson())
+// 		// Create new user and login for get token
+// 		fullname := fmt.Sprintf("%s %s", helper.RandomPerson(), helper.RandomPerson())
 
-		dataUser := web.UserCreateRequest{}
-		if tc.name != "failed_create_user_forbidden" {
-			// Create data user with field role
-			dataUser.Fullname = fullname
-			dataUser.Username = strings.ToLower(helper.RandomPerson())
-			dataUser.Password = "password"
-			dataUser.Role = "admin"
-		} else {
-			// Create data user withouth field role (default role: `user`)
-			dataUser.Fullname = fullname
-			dataUser.Username = strings.ToLower(helper.RandomPerson())
-			dataUser.Password = "password"
-		}
+// 		dataUser := web.UserCreateRequest{}
+// 		if tc.name != "failed_create_user_forbidden" {
+// 			// Create data user with field role
+// 			dataUser.Fullname = fullname
+// 			dataUser.Username = strings.ToLower(helper.RandomPerson())
+// 			dataUser.Password = "password"
+// 			dataUser.Role = "admin"
+// 		} else {
+// 			// Create data user withouth field role (default role: `user`)
+// 			dataUser.Fullname = fullname
+// 			dataUser.Username = strings.ToLower(helper.RandomPerson())
+// 			dataUser.Password = "password"
+// 		}
 
-		repository := repository.NewUserRepository(ConnTest)
-		service := service.NewServiceUser(repository)
+// 		repository := repository.NewUserRepository(ConnTest)
+// 		service := service.NewServiceUser(repository)
 
-		// Create user
-		_, err := service.Create(dataUser)
-		helper.ErrLogPanic(err)
+// 		// Create user
+// 		_, err := service.Create(dataUser)
+// 		helper.ErrLogPanic(err)
 
-		// Login
-		dataLogin := web.UserLoginRequest{
-			Username: dataUser.Username,
-			Password: dataUser.Password,
-		}
-		token, err := service.Login(dataLogin)
-		helper.ErrLogPanic(err)
-		strToken := fmt.Sprintf("Bearer %s", token)
-		// End Create new user and login for get token
+// 		// Login
+// 		dataLogin := web.UserLoginRequest{
+// 			Username: dataUser.Username,
+// 			Password: dataUser.Password,
+// 		}
+// 		token, err := service.Login(dataLogin)
+// 		helper.ErrLogPanic(err)
+// 		strToken := fmt.Sprintf("Bearer %s", token)
+// 		// End Create new user and login for get token
 
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
+// 		t.Run(tc.name, func(t *testing.T) {
+// 			t.Parallel()
 
-			var dataBody string
-			// Data body
-			if tc.name == "success_create_user" {
-				// Body with field role
-				dataBody = fmt.Sprintf(`{"fullname": "%s", "username": "%s", "password": "%s", "role": "%s"}`, tc.req.Fullname, tc.req.Username, tc.req.Password, tc.req.Role)
-			} else if tc.name == "failed_create_user_username_is_exists" {
-				// Value field username same with username in database
-				dataBody = fmt.Sprintf(`{"fullname": "%s", "username": "%s", "password": "%s", "role": "%s"}`, tc.req.Fullname, dataUser.Username, tc.req.Password, tc.req.Role)
-			} else {
-				// Body without field role
-				dataBody = fmt.Sprintf(`{"fullname": "%s", "username": "%s", "password": "%s"}`, tc.req.Fullname, tc.req.Username, tc.req.Password)
-			}
+// 			var dataBody string
+// 			// Data body
+// 			if tc.name == "success_create_user" {
+// 				// Body with field role
+// 				dataBody = fmt.Sprintf(`{"fullname": "%s", "username": "%s", "password": "%s", "role": "%s"}`, tc.req.Fullname, tc.req.Username, tc.req.Password, tc.req.Role)
+// 			} else if tc.name == "failed_create_user_username_is_exists" {
+// 				// Value field username same with username in database
+// 				dataBody = fmt.Sprintf(`{"fullname": "%s", "username": "%s", "password": "%s", "role": "%s"}`, tc.req.Fullname, dataUser.Username, tc.req.Password, tc.req.Role)
+// 			} else {
+// 				// Body without field role
+// 				dataBody = fmt.Sprintf(`{"fullname": "%s", "username": "%s", "password": "%s"}`, tc.req.Fullname, tc.req.Username, tc.req.Password)
+// 			}
 
-			// New reader
-			requestBody := strings.NewReader(dataBody)
-			// Create new request
-			request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/api/v1/users", requestBody)
-			// Added header `content-type`
-			request.Header.Add("Content-Type", "application/json")
+// 			// New reader
+// 			requestBody := strings.NewReader(dataBody)
+// 			// Create new request
+// 			request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/api/v1/users", requestBody)
+// 			// Added header `content-type`
+// 			request.Header.Add("Content-Type", "application/json")
 
-			// Added header `Authorization` if test case not "failed_create_user_unauthorized"
-			if tc.name != "failed_create_user_unauthorized" {
-				request.Header.Add("Authorization", strToken)
-			}
+// 			// Added header `Authorization` if test case not "failed_create_user_unauthorized"
+// 			if tc.name != "failed_create_user_unauthorized" {
+// 				request.Header.Add("Authorization", strToken)
+// 			}
 
-			// Create new recorder
-			recorder := httptest.NewRecorder()
+// 			// Create new recorder
+// 			recorder := httptest.NewRecorder()
 
-			// Run http test
-			RouteTest.ServeHTTP(recorder, request)
+// 			// Run http test
+// 			RouteTest.ServeHTTP(recorder, request)
 
-			// Get response
-			response := recorder.Result()
+// 			// Get response
+// 			response := recorder.Result()
 
-			// Read all response
-			body, _ := io.ReadAll(response.Body)
-			var responseBody map[string]interface{}
-			json.Unmarshal(body, &responseBody)
+// 			// Read all response
+// 			body, _ := io.ReadAll(response.Body)
+// 			var responseBody map[string]interface{}
+// 			json.Unmarshal(body, &responseBody)
 
-			if tc.name == "success_create_user" {
-				assert.Equal(t, 201, response.StatusCode)
-				assert.Equal(t, 201, int(responseBody["code"].(float64)))
-				assert.Equal(t, "success", responseBody["status"])
-				assert.Equal(t, "User has been created", responseBody["message"])
+// 			if tc.name == "success_create_user" {
+// 				assert.Equal(t, 201, response.StatusCode)
+// 				assert.Equal(t, 201, int(responseBody["code"].(float64)))
+// 				assert.Equal(t, "success", responseBody["status"])
+// 				assert.Equal(t, "User has been created", responseBody["message"])
 
-				// Get one by username
-				user, err := service.GetOne(tc.req.Username)
-				helper.ErrLogPanic(err)
+// 				// Get one by username
+// 				user, err := service.GetOne(tc.req.Username)
+// 				helper.ErrLogPanic(err)
 
-				assert.NotEmpty(t, user.ID)
-				assert.NotEmpty(t, user.CreatedAt)
-				assert.NotEmpty(t, user.UpdatedAt)
+// 				assert.NotEmpty(t, user.ID)
+// 				assert.NotEmpty(t, user.CreatedAt)
+// 				assert.NotEmpty(t, user.UpdatedAt)
 
-				assert.Equal(t, dataUser.Username, user.Username)
-				assert.Equal(t, dataUser.Fullname, user.Fullname)
-				assert.Equal(t, "admin", user.Role)
+// 				assert.Equal(t, dataUser.Username, user.Username)
+// 				assert.Equal(t, dataUser.Fullname, user.Fullname)
+// 				assert.Equal(t, "admin", user.Role)
 
-				// Compare password must be same
-				err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(dataUser.Password))
-				assert.NoError(t, err)
+// 				// Compare password must be same
+// 				err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(dataUser.Password))
+// 				assert.NoError(t, err)
 
-			} else if tc.name == "success_create_user_without_role" {
+// 			} else if tc.name == "success_create_user_without_role" {
 
-				assert.Equal(t, 201, response.StatusCode)
-				assert.Equal(t, 201, int(responseBody["code"].(float64)))
-				assert.Equal(t, "success", responseBody["status"])
-				assert.Equal(t, "User has been created", responseBody["message"])
+// 				assert.Equal(t, 201, response.StatusCode)
+// 				assert.Equal(t, 201, int(responseBody["code"].(float64)))
+// 				assert.Equal(t, "success", responseBody["status"])
+// 				assert.Equal(t, "User has been created", responseBody["message"])
 
-				// Get one by username
-				user, err := service.GetOne(tc.req.Username)
-				helper.ErrLogPanic(err)
+// 				// Get one by username
+// 				user, err := service.GetOne(tc.req.Username)
+// 				helper.ErrLogPanic(err)
 
-				assert.NotEmpty(t, user.ID)
-				assert.NotEmpty(t, user.CreatedAt)
-				assert.NotEmpty(t, user.UpdatedAt)
+// 				assert.NotEmpty(t, user.ID)
+// 				assert.NotEmpty(t, user.CreatedAt)
+// 				assert.NotEmpty(t, user.UpdatedAt)
 
-				assert.Equal(t, dataUser.Username, user.Username)
-				assert.Equal(t, dataUser.Fullname, user.Fullname)
-				assert.Equal(t, "user", user.Role)
+// 				assert.Equal(t, dataUser.Username, user.Username)
+// 				assert.Equal(t, dataUser.Fullname, user.Fullname)
+// 				assert.Equal(t, "user", user.Role)
 
-				// Compare password must be same
-				err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(dataUser.Password))
-				assert.NoError(t, err)
+// 				// Compare password must be same
+// 				err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(dataUser.Password))
+// 				assert.NoError(t, err)
 
-			} else if tc.name == "failed_create_user_username_is_exists" {
+// 			} else if tc.name == "failed_create_user_username_is_exists" {
 
-				assert.Equal(t, 400, response.StatusCode)
-				assert.Equal(t, 400, int(responseBody["code"].(float64)))
-				assert.Equal(t, "error", responseBody["status"])
-				assert.Equal(t, "username already exist", responseBody["message"])
+// 				assert.Equal(t, 400, response.StatusCode)
+// 				assert.Equal(t, 400, int(responseBody["code"].(float64)))
+// 				assert.Equal(t, "error", responseBody["status"])
+// 				assert.Equal(t, "username already exist", responseBody["message"])
 
-			} else if tc.name == "failed_create_user_validation_error" {
+// 			} else if tc.name == "failed_create_user_validation_error" {
 
-				assert.Equal(t, 400, response.StatusCode)
-				assert.Equal(t, 400, int(responseBody["code"].(float64)))
-				assert.Equal(t, "error", responseBody["status"])
-				assert.Equal(t, "create user failed", responseBody["message"])
-				assert.NotEqual(t, 0, len((responseBody["data"].(map[string]interface{})["errors"].([]interface{}))))
+// 				assert.Equal(t, 400, response.StatusCode)
+// 				assert.Equal(t, 400, int(responseBody["code"].(float64)))
+// 				assert.Equal(t, "error", responseBody["status"])
+// 				assert.Equal(t, "create user failed", responseBody["message"])
+// 				assert.NotEqual(t, 0, len((responseBody["data"].(map[string]interface{})["errors"].([]interface{}))))
 
-			} else if tc.name == "failed_create_user_unauthorized" {
+// 			} else if tc.name == "failed_create_user_unauthorized" {
 
-				assert.Equal(t, 401, response.StatusCode)
-				assert.Equal(t, 401, int(responseBody["code"].(float64)))
-				assert.Equal(t, "error", responseBody["status"])
-				assert.Equal(t, "Unauthorized", responseBody["message"])
+// 				assert.Equal(t, 401, response.StatusCode)
+// 				assert.Equal(t, 401, int(responseBody["code"].(float64)))
+// 				assert.Equal(t, "error", responseBody["status"])
+// 				assert.Equal(t, "Unauthorized", responseBody["message"])
 
-			} else {
+// 			} else {
 
-				assert.Equal(t, 403, response.StatusCode)
-				assert.Equal(t, 403, int(responseBody["code"].(float64)))
-				assert.Equal(t, "error", responseBody["status"])
-				assert.Equal(t, "forbidden", responseBody["message"])
+// 				assert.Equal(t, 403, response.StatusCode)
+// 				assert.Equal(t, 403, int(responseBody["code"].(float64)))
+// 				assert.Equal(t, "error", responseBody["status"])
+// 				assert.Equal(t, "forbidden", responseBody["message"])
 
-			}
-		})
-	}
-}
+// 			}
+// 		})
+// 	}
+// }
