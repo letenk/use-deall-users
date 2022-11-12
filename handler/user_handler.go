@@ -62,16 +62,16 @@ func (h *userHandler) Login(c *gin.Context) {
 func (h *userHandler) Create(c *gin.Context) {
 	// Check Authorization
 	// Get current user login
-	// currentUser := c.MustGet("currentUser").(domain.User)
-	// if currentUser.Role != "admin" {
-	// 	response := web.JSONResponseWithoutData(
-	// 		http.StatusForbidden,
-	// 		"error",
-	// 		"forbidden",
-	// 	)
-	// 	c.JSON(http.StatusForbidden, response)
-	// 	return
-	// }
+	currentUser := c.MustGet("currentUser").(domain.User)
+	if currentUser.Role != "admin" {
+		response := web.JSONResponseWithoutData(
+			http.StatusForbidden,
+			"error",
+			"forbidden",
+		)
+		c.JSON(http.StatusForbidden, response)
+		return
+	}
 
 	// Get payload body
 	var req web.UserCreateRequest
