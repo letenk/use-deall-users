@@ -25,6 +25,23 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Create env file
+        env:
+          APP_PRODUCTION: ${{secrets.APP_PRODUCTION}}
+          MONGO_USER: ${{secrets.MONGO_USER}}
+          MONGO_PASSWORD: ${{secrets.MONGO_PASSWORD}}
+          MONGO_HOST: ${{secrets.MONGO_HOST}}
+          MONGO_DBNAME: ${{secrets.MONGO_DBNAME}}
+          SECRET_KEY: ${{secrets.SECRET_KEY}}
+        run: |
+          touch .env
+          echo APP_PRODUCTION=$APP_PRODUCTION >> .env
+          echo MONGO_USER=$MONGO_USER >> .env
+          echo MONGO_PASSWORD=$MONGO_PASSWORD >> .env
+          echo MONGO_HOST=$MONGO_HOST >> .env
+          echo MONGO_DBNAME=$MONGO_DBNAME >> .env
+          echo SECRET_KEY=$SECRET_KEY >> .env
+
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}

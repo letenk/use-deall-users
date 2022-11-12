@@ -11,13 +11,20 @@ import (
 )
 
 func SetupDB() *mongo.Database {
+	appProduction := os.Getenv("APP_PRODUCTION")
 	dbUser := os.Getenv("MONGO_USER")
 	dbPassword := os.Getenv("MONGO_PASSWORD")
 	dbHost := os.Getenv("MONGO_HOST")
 	dbPort := os.Getenv("MONGO_PORT")
 	dbName := os.Getenv("MONGO_DBNAME")
 
-	dsn := fmt.Sprintf("mongodb://%s:%s@%s:%s", dbUser, dbPassword, dbHost, dbPort)
+	var dsn string
+	if appProduction == "true" {
+		dsn = fmt.Sprintf("mongodb+srv://%s:%s@%s", dbUser, dbPassword, dbHost)
+	} else {
+		dsn = fmt.Sprintf("mongodb://%s:%s@%s:%s", dbUser, dbPassword, dbHost, dbPort)
+	}
+
 	// Create connection options
 	clientOptions := options.Client().ApplyURI(dsn)
 	// Create new client for connect to mongo
