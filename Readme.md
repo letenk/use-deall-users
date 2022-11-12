@@ -1,19 +1,19 @@
 # Todo
 - [ ] Documentation
-    - [ ] Swagger
+    - [x] Swagger
     - [ ] Postman
 - [ ] Architecture diagram flow CRUD and Login
 - [ ] Attach credential in the Readme.md
 - [ ] CRUD
-    - [ ] Create
-    - [ ] Get all
-    - [ ] Get one
-    - [ ] Update
-    - [ ] Delete
-    - [ ] Login
-        - [ ] Generate Token JWT
+    - [x] Create (admin only)
+    - [x] Get all
+    - [x] Get one (admin only)
+    - [x] Update (admin only)
+    - [x] Delete (admin only)
+    - [x] Login
+        - [x] Generate Token JWT
         - [ ] Refresh Token
-- [ ] Role `user` only can access `read`
-- [ ] Containerization
-- [ ] Kubernetes
-- [ ] Upload into Github
+- [x] Role `user` only can access `read` (Endpoint `Get all`)
+- [ ] Containerization [1]
+- [ ] Kubernetes [1]
+- [x] Upload into Github
