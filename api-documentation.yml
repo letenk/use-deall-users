@@ -32,20 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    format: int32
-                  status:
-                    type: string
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      token:
-                        type: string
+                $ref: "#/components/schemas/LoginSuccess"
                 example:
                   code: 200
                   status: success
@@ -58,27 +45,26 @@ paths:
           content:
             application/json:
                schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    format: int32
-                  status:
-                    type: string
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      errors:
-                        type: string
-                example:
-                  Bad Request:
+                  oneOf:
+                    - $ref: "#/components/schemas/LoginFailed"
+                    - $ref: "#/components/schemas/ValidationErrors"
+                  example:
+                    Login Failed:
+                      code: 400
+                      status: error
+                      message: login failed
+                      data: {
+                        errors: "username or password incorrect"
+                      }
+                    ValidationErrors:
                     code: 400
                     status: error
                     message: login failed
                     data: {
-                       errors: "username or password incorrect"
+                      errors: [
+                        "Key: 'LoginInput.Username' Error:Field validation for 'Username' failed on the 'username' tag",
+                        "Key: 'LoginInput.Password' Error:Field validation for 'Password' failed on the 'required' tag"
+                      ]
                     }
   /api/v1/users:
     get:
@@ -162,7 +148,7 @@ paths:
               schema:
                 oneOf:
                   - $ref: "#/components/schemas/CreateUserFailedIsExist"
-                  - $ref: "#/components/schemas/CreateUserFailedValidationErrors"
+                  - $ref: "#/components/schemas/ValidationErrors"
                 example:
                   CreateUserFailedIsExist:
                     code: 400
@@ -171,7 +157,7 @@ paths:
                     data: {
                       errors: username already exist
                     }
-                  CreateUserFailedValidationErrors:
+                  ValidationErrors:
                     code: 400
                     status: error
                     message: create user failed
@@ -420,6 +406,39 @@ components:
           type: string
           required:
             - "true"
+    
+    LoginSuccess:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+
+    LoginFailed:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            errors:
+              type: string
+      
 # End Components Schema Login User
 
 # Components Schema Create User
@@ -474,7 +493,7 @@ components:
             errors:
               type: string
 
-    CreateUserFailedValidationErrors:
+    ValidationErrors:
       type: object
       properties:
         code:
