@@ -3,9 +3,21 @@ services:
   mongodb:
     image: mongo:latest
     restart: always
+    ports:
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+
+  mongo_seed:
+    image: mongo:3.2.6
+    volumes:
+      - ./mongo-seed:/mongo-seed
+    command:
+      /mongo-seed/import.sh
+    depends_on:
+      - mongodb
+      
   app:
     build: 
       context: .

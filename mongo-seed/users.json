@@ -1,0 +1,33 @@
+[{
+  "_id": "41b37219-7a87-43ad-b0c2-ad0eec19bdbe",
+  "fullname": "admin",
+  "username": "admin",
+  "password": "$2a$04$XoGTT5BtdJwgAL3H0o0Z2uwCqu9JrUzrqDi9uARXYTmUVpk0hL67m",
+  "role": "admin",
+  "created_at": {
+    "$date": {
+      "$numberLong": "1668295576117"
+    }
+  },
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1668295576117"
+    }
+  }
+},{
+  "_id": "744a0798-ffdb-40f0-bf6e-63639b2d5710",
+  "fullname": "user",
+  "username": "user",
+  "password": "$2a$04$sPaotMUSdty2ec4seh3xvuoIDD.sAooUAnmQG62iDc6HoBR.KIYDi",
+  "role": "user",
+  "created_at": {
+    "$date": {
+      "$numberLong": "1668295693520"
+    }
+  },
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1668295693520"
+    }
+  }
+}]
