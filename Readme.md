@@ -19,7 +19,7 @@ password: password
 
 # Architecture Diagram
 ## Local Development
-![architecture diagram local development](https://previews.dropbox.com/p/thumb/ABv1gh2Aqm_45ZdnA2LGpnUe3VgWm_vpB53TvVALCxdQqW2AO3XWPJMlR9XxxFXzBZtCr6JQCuneId-VBoCA1ABSnzAQ_Q9QPEdsR86JHrdCwy5fa1Ymqinrub1h1kzgXDHpIySvnpAweq035N8fRBISx3CN1ikJ8C9g-3NK8AejVIs09BgiR4hHiSeq8_eX3IycauBDJbtBXkPguPRALUBYhTxpvwoVM8EkoqQ6x43DPaO03CpQeHAaSMC-XG1J5nYtXm8XpZnTyXZo1EIUP0eNc4hTljBvrPEwL-e3AL86oJFPv5BXWs9h6eIdrNmRs4aiUFf0mSGdkwvrYpBHOXy8cMqjfM7l3uGDKgj3CTtK6rfv8Q02pOmvndxKyrIB_-A/p.png)
+![architecture diagram local development](/assets/use-deall-architecture-diagram-local-development.png)
 
 # Todo
 - [x] Documentation
